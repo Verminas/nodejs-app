@@ -1,20 +1,15 @@
 import  {Request, Response, Router} from "express";
+import {productsRepository} from "../repositories/productsRepository";
 
-const products = [{title: 'tomato', id: 1}, {title: 'orange', id: 2}, {title: 'apple', id: 3}]
 export const productsRouter = Router()
 
 productsRouter.get('/', (req: Request, res: Response) => {
-  if (req.query.title) {
-    const queryTitle = req.query.title.toString()
-    const prodFiltered = products.filter(pr => pr.title.includes(queryTitle))
-    res.send(prodFiltered)
-  } else {
-    res.send(products)
-  }
+  const products = productsRepository.getProducts({title: req.query.title?.toString()})
+  res.send(products)
 })
 
 productsRouter.get('/:id', (req: Request, res: Response) => {
-  const product = products.find(i => i.id === +req.params.id)
+  const product = productsRepository.getProductById(+req.params.id)
   if (product) {
     res.status(200).send(product)
   } else {
@@ -23,10 +18,8 @@ productsRouter.get('/:id', (req: Request, res: Response) => {
 })
 
 productsRouter.delete('/:id', (req: Request, res: Response) => {
-  const id = +req.params.id
-  const index = products.findIndex(i => i.id === id)
-  if (index > -1) {
-    products.splice(index, 1);
+  const isDeleted = productsRepository.deleteProductById(+req.params.id)
+  if (isDeleted) {
     res.send(204)
   } else {
     res.status(404).send('Product not found')
@@ -34,25 +27,20 @@ productsRouter.delete('/:id', (req: Request, res: Response) => {
 })
 
 productsRouter.post('/', (req: Request, res: Response) => {
-  const title = req.body.title
-  if (title.length) {
-    const newProduct = {title: title, id: Date.now()}
-    products.push(newProduct)
-    res.status(201).send(newProduct)
+  const product= productsRepository.createProduct({title: req.body.title})
+  if (product) {
+    res.status(201).send(product)
   } else {
-    res.status(400).send('Title length should be more 0')
+    res.status(400).send('New product should have a title')
   }
 })
 
 productsRouter.put('/:id', (req: Request, res: Response) => {
-  const id = +req.params.id
-  const newTitle = req.body.title
-  const product = products.find(p => p.id === id)
-  if (product && newTitle.length) {
-    product.title = newTitle
+  const isUpdated = productsRepository.updateProduct({id: +req.params.id, title: req.body.title })
+  if(isUpdated) {
+    const product = productsRepository.getProductById(+req.params.id)
     res.status(200).send(product)
   } else {
-    !product && res.status(404).send('Product is not found')
-    !newTitle.length && res.status(400).send('Title length should be more 0')
+    res.send(400)
   }
 })
