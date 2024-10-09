@@ -15,15 +15,9 @@ export const productsRepository = {
     const result = await productsCollection.deleteOne({id})
     return result.acknowledged && result.deletedCount === 1;
   },
-  async createProduct(params: { name: string | undefined }): Promise<Nullable<Product>> {
-    const {name} = params
-    if (name) {
-      const newProduct = {name, id: Date.now().toString()}
-      await productsCollection.insertOne(newProduct)
-      return newProduct
-    } else {
-      return null
-    }
+  async createProduct(product: Product):Promise<Product> {
+      await productsCollection.insertOne(product)
+      return product
   },
   async updateProduct(params: { name: string | undefined, id: string }): Promise<boolean> {
     const {id, name} = params
