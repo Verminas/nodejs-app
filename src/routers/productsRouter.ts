@@ -8,7 +8,7 @@ export const productsRouter = Router()
 
 productsRouter.get('/', async (req: Request, res: Response) => {
   const products: Product[] = await  productsRepository.getProducts({name: req.query.name?.toString()})
-  res.send(products)
+  res.status(200).send(products)
 })
 
 productsRouter.get('/:id', async (req: Request, res: Response) => {
