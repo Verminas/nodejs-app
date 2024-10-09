@@ -1,7 +1,8 @@
 import { Request, Response, Router} from "express";
-import {Nullable, Product, productsRepository} from "../repositories/productsRepositoryDB";
+import {productsRepository} from "../repositories/productsRepositoryDB";
 import {errorsValidate, titleValidator} from "../middlewars/input-validators";
 import {authValidator} from "../middlewars/auth-validators";
+import {Product, Nullable} from "../types/products";
 
 export const productsRouter = Router()
 
@@ -28,9 +29,7 @@ productsRouter.delete('/:id', authValidator, async (req: Request, res: Response)
   }
 })
 
-//  authValidator, titleValidator, errorsValidate
-
-productsRouter.post('/' ,async (req: Request, res: Response) => {
+productsRouter.post('/' , authValidator, titleValidator, errorsValidate, async (req: Request, res: Response) => {
   const product: Nullable<Product> = await productsRepository.createProduct({name: req.body.name})
   if (product) {
     res.status(201).send(product)
