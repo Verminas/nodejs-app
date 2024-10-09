@@ -1,17 +1,17 @@
 import { Request, Response, Router} from "express";
-import {productsRepository} from "../repositories/productsRepository";
+import {Nullable, Product, productsRepository} from "../repositories/productsRepository";
 import {errorsValidate, titleValidator} from "../middlewars/input-validators";
 import {authValidator} from "../middlewars/auth-validators";
 
 export const productsRouter = Router()
 
-productsRouter.get('/', (req: Request, res: Response) => {
-  const products = productsRepository.getProducts({title: req.query.title?.toString()})
+productsRouter.get('/', async (req: Request, res: Response) => {
+  const products: Product[] = await  productsRepository.getProducts({name: req.query.name?.toString()})
   res.send(products)
 })
 
-productsRouter.get('/:id', (req: Request, res: Response) => {
-  const product = productsRepository.getProductById(+req.params.id)
+productsRouter.get('/:id', async (req: Request, res: Response) => {
+  const product: Nullable<Product> = await productsRepository.getProductById(req.params.id)
   if (product) {
     res.status(200).send(product)
   } else {
@@ -19,28 +19,28 @@ productsRouter.get('/:id', (req: Request, res: Response) => {
   }
 })
 
-productsRouter.delete('/:id', authValidator, (req: Request, res: Response) => {
-  const isDeleted = productsRepository.deleteProductById(+req.params.id)
+productsRouter.delete('/:id', authValidator, async (req: Request, res: Response) => {
+  const isDeleted: boolean = await productsRepository.deleteProductById(req.params.id)
   if (isDeleted) {
     res.send(204)
   } else {
-    res.status(404).send('Product not found')
+    res.send(404)
   }
 })
 
-productsRouter.post('/', authValidator, titleValidator, errorsValidate ,(req: Request, res: Response) => {
-  const product= productsRepository.createProduct({title: req.body.title})
+productsRouter.post('/', authValidator, titleValidator, errorsValidate ,async (req: Request, res: Response) => {
+  const product: Nullable<Product>= await productsRepository.createProduct({name: req.body.name})
   if (product) {
-    res.status(201).send(product)
+    res.sendStatus(201).send(product)
   } else {
-    res.status(400).send('New product should have a title')
+    res.send(400)
   }
 })
 
-productsRouter.put('/:id', authValidator, titleValidator, errorsValidate, (req: Request, res: Response) => {
-  const isUpdated = productsRepository.updateProduct({id: +req.params.id, title: req.body.title })
+productsRouter.put('/:id', authValidator, titleValidator, errorsValidate, async (req: Request, res: Response) => {
+  const isUpdated: boolean = await productsRepository.updateProduct({id: req.params.id, name: req.body.name })
   if(isUpdated) {
-    const product = productsRepository.getProductById(+req.params.id)
+    const product: Nullable<Product> = await productsRepository.getProductById(req.params.id)
     res.status(200).send(product)
   } else {
     res.send(400)

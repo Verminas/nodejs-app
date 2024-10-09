@@ -1,16 +1,16 @@
-const products = [{title: 'tomato', id: 1}, {title: 'orange', id: 2}, {title: 'apple', id: 3}]
+const products: Product[] = [{name: 'tomato', id: '1'}, {name: 'orange', id: '2'}, {name: 'apple', id: '3'}]
 
 export const productsRepository = {
-  getProducts(params: {title: string | undefined}){
-    const {title} = params
-    if (title) {
-      const filteredProducts = products.filter(pr => pr.title.startsWith(title))
+  async getProducts(params: {name: string | undefined}): Promise<Product[]>{
+    const {name} = params
+    if (name) {
+      const filteredProducts = products.filter(pr => pr.name.startsWith(name))
       return filteredProducts
     } else {
       return products
     }
   },
-  getProductById(id: number) {
+  async getProductById(id: string): Promise<Nullable<Product>> {
     const product = products.find(i => i.id === id)
     if (product) {
       return product
@@ -18,7 +18,7 @@ export const productsRepository = {
       return null
     }
   },
-  deleteProductById(id: number) {
+  async deleteProductById(id: string): Promise<boolean> {
     const index = products.findIndex(i => i.id === id)
     if (index > -1) {
       products.splice(index, 1);
@@ -27,24 +27,30 @@ export const productsRepository = {
       return false
     }
   },
-  createProduct(params: {title: string | undefined}) {
-    const {title} = params
-    if (title) {
-      const newProduct = {title, id: Date.now()}
+  async createProduct(params: {name: string | undefined}): Promise<Nullable<Product>> {
+    const {name} = params
+    if (name) {
+      const newProduct = {name, id: Date.now().toString()}
       products.push(newProduct)
       return newProduct
     } else {
       return null
     }
   },
-  updateProduct(params: {title: string | undefined, id: number}) {
-    const {id, title} = params
+  async updateProduct(params: {name: string | undefined, id: string}): Promise<boolean> {
+    const {id, name} = params
     const product = products.find(p => p.id === id)
-    if (product && title) {
-      product.title = title
+    if (product && name) {
+      product.name = name
       return true
     } else {
       return false
     }
   }
 }
+
+export type Product = {
+  name: string
+  id: string
+}
+export type Nullable<T> = null | T
