@@ -11,6 +11,10 @@ app.get('/', (req, res) => {
   res.send('Hello from my first node app')
 })
 
+app.listen(PORT, () => {
+    console.log(`start app on port ${PORT} http://localhost:${PORT}`)
+  })
+
 // const startApp = async () => {
 //   await runDb()
 //   app.listen(PORT, () => {
