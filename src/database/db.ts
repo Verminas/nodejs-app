@@ -1,6 +1,8 @@
 import {MongoClient} from 'mongodb'
 import {Product} from "../types/products";
+import dotenv from 'dotenv'
 
+dotenv.config()
 const mongoUri = process.env.MONGODB_URI || "mongodb://0.0.0.0:27017"
 
 const client = new MongoClient(mongoUri)

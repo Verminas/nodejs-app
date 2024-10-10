@@ -7,7 +7,6 @@ import {productsService} from "../domain/productsService";
 export const productsRouter = Router()
 
 productsRouter.get('/', async (req: Request, res: Response) => {
-  console.log(req.body)
   const products: Product[] = await  productsService.getProducts({name: req.query.name?.toString()})
   res.status(200).send(products)
 })
