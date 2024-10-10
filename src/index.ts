@@ -5,8 +5,11 @@ import {runDb} from "./database/db";
 const PORT = process.env.PORT || 5009
 const app = express()
 app.use(express.json());
-
 app.use('/products', productsRouter)
+
+app.get('/', (req, res) => {
+  res.send('Hello from my first node app')
+})
 
 const startApp = async () => {
   await runDb()

@@ -1,5 +1,5 @@
 import {Nullable, Product} from "../types/products";
-import {productsRepository} from "../repositories/productsRepositoryDB";
+import {productsRepository} from "../repositories/productsRepositoryInMemory";
 
 
 export const productsService = {
