@@ -11,11 +11,11 @@ app.get('/', (req, res) => {
   res.send('Hello from my first node app')
 })
 
-const startApp = async () => {
-  await runDb()
-  app.listen(PORT, () => {
-    console.log(`start app on port ${PORT} http://localhost:${PORT}`)
-  })
-}
-
-startApp()
+// const startApp = async () => {
+//   await runDb()
+//   app.listen(PORT, () => {
+//     console.log(`start app on port ${PORT} http://localhost:${PORT}`)
+//   })
+// }
+//
+// startApp()
