@@ -12,8 +12,9 @@ app.get('/', (req, res) => {
 })
 
 app.listen(PORT, () => {
-    console.log(`start app on port ${PORT} http://localhost:${PORT}`)
-  })
+  console.log(`start app on port ${PORT} http://localhost:${PORT}`)
+  console.log('working with db in memory')
+})
 
 // const startApp = async () => {
 //   await runDb()
